@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/v131v/smshub-api/issues"
   },
-  "homepage": "https://github.com/v131v/smshub-api#readme"
+  "homepage": "https://github.com/v131v/smshub-api#readme",
+  "dependencies": {
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  }
 }
