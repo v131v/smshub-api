@@ -11,9 +11,8 @@
     "url": "git+https://github.com/v131v/smshub-api.git"
   },
   "keywords": [
-    "smshub",
     "api",
-    "smshub-api"
+    "smshub"
   ],
   "author": "v131v",
   "license": "ISC",
