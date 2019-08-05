@@ -55,7 +55,7 @@ class SmsHubAPI {
 			action: 'getBalance'
 		}, answer => {
 			return {
-				balance: answer.match(/ACCESS_BALANCE:(\d+)/)[1]
+				balance: answer.match(/ACCESS_BALANCE:(\d+\.?\d*)/)[1]
 			};
 		});
 	}
