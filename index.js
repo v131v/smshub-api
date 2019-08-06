@@ -21,24 +21,22 @@ class SmsHubAPI {
 		this.code = '';
 	}
 
-	query(qParams, callback) {
-		return new Promise((resolve, reject) => {
-			rp({
-				uri: this.url,
-				qs: Object.assign({
-					api_key: this.token
-				}, qParams)
-			}).then(answer => {
+	query(qParams) {
+		return rp({
+			uri: this.url,
+			qs: Object.assign({
+				api_key: this.token
+			}, qParams)
+		}).then(answer => {
 
-				if (answer.match(/(NO|WRONG|BAD|ERROR)/) !== null) {
-					reject({
-						error: answer
-					});
-				} else {
-					resolve(callback(answer));
-				}
+			if (answer.match(/(NO|WRONG|BAD|ERROR)/) !== null) {
+				return {
+					error: answer
+				};
+			} else {
+				return answer;
+			}
 
-			});
 		});
 	}
 
@@ -47,13 +45,13 @@ class SmsHubAPI {
 			action: 'getNumberStatus',
 			country: country,
 			operator: operator
-		}, JSON.parse);
+		}).then(answer => JSON.parse(answer));
 	}
 
 	getBalance() {
 		return this.query({
 			action: 'getBalance'
-		}, answer => {
+		}).then(answer => {
 			return {
 				balance: answer.match(/ACCESS_BALANCE:(\d+\.?\d*)/)[1]
 			};
@@ -66,7 +64,7 @@ class SmsHubAPI {
 			service: service,
 			country: country,
 			operator: operator
-		}, answer => {
+		}).then(answer => {
 			this.id = answer.match(/ACCESS_NUMBER:(\d+):\d+/)[1];
 			this.number = answer.match(/ACCESS_NUMBER:\d+:(\d+)/)[1];
 			return {
@@ -80,7 +78,7 @@ class SmsHubAPI {
 		return this.query({
 			action: 'getStatus',
 			id: id
-		}, answer => {
+		}).then(answer => {
 			if (ansewr.match(/\w+:(\d+)/) !== null) {
 				this.code = ansewr.match(/\w+:(\d+)/)[1];
 				return {
@@ -99,7 +97,7 @@ class SmsHubAPI {
 			action: 'setStatus',
 			status: status,
 			id: id
-		}, answer => {
+		}).then(answer => {
 			return {
 				status: answer.replace('ACCESS_', '')
 			};
