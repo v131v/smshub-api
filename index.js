@@ -30,9 +30,7 @@ class SmsHubAPI {
 		}).then(answer => {
 
 			if (answer.match(/(NO|WRONG|BAD|ERROR)/) !== null) {
-				return {
-					error: answer
-				};
+				throw new Error(answer);
 			} else {
 				return answer;
 			}
@@ -41,11 +39,16 @@ class SmsHubAPI {
 	}
 
 	getNumberStatus(country, operator) {
-		return this.query({
-			action: 'getNumberStatus',
-			country: country,
-			operator: operator
-		}).then(answer => JSON.parse(answer));
+
+		let obj = {
+			action: 'getNumbersStatus'
+		};
+
+		if (operator) obj = Object.assign(obj, {operator:operator});
+		if (country) obj = Object.assign(obj, {country:country});
+
+		return this.query(obj).then(answer => JSON.parse(answer));
+
 	}
 
 	getBalance() {
@@ -59,26 +62,35 @@ class SmsHubAPI {
 	}
 
 	getNumber(service, country, operator) {
-		return this.query({
-			action: 'getNumber',
-			service: service,
-			country: country,
-			operator: operator
-		}).then(answer => {
+
+		let obj = {
+			action: 'getNumber'
+		};
+
+		if (operator) obj = Object.assign(obj, {operator:operator});
+		if (country) obj = Object.assign(obj, {country:country});
+		if (service) obj = Object.assign(obj, {service:service});
+
+		return this.query(obj).then(answer => {
 			this.id = answer.match(/ACCESS_NUMBER:(\d+):\d+/)[1];
 			this.number = answer.match(/ACCESS_NUMBER:\d+:(\d+)/)[1];
 			return {
 				id: this.id,
-				number: this,number
+				number: this.number
 			};
 		});
+
 	}
 
 	getStatus(id) {
-		return this.query({
-			action: 'getStatus',
-			id: id
-		}).then(answer => {
+
+		let obj = {
+			action: 'getStatus'
+		};
+
+		if (id) obj = Object.assign(obj, {id:id});
+
+		return this.query(obj).then(answer => {
 			if (ansewr.match(/\w+:(\d+)/) !== null) {
 				this.code = ansewr.match(/\w+:(\d+)/)[1];
 				return {
@@ -90,18 +102,24 @@ class SmsHubAPI {
 				status: answer.replace('STATUS_', '')
 			};
 		});
+
 	}
 
 	setStatus(status, id) {
-		return this.query({
-			action: 'setStatus',
-			status: status,
-			id: id
-		}).then(answer => {
+
+		let obj = {
+			action: 'setStatus'
+		};
+
+		if (id) obj = Object.assign(obj, {id:id});
+		if (status) obj = Object.assign(obj, {status:status});
+
+		return this.query(obj).then(answer => {
 			return {
 				status: answer.replace('ACCESS_', '')
 			};
 		});
+
 	}
 
 };
